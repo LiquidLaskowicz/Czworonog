@@ -28,30 +28,31 @@ set(PICO_BOARD pico CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(pico_start C CXX ASM)
+project(pico_quad C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(pico_start pico_start.c )
+add_executable(pico_quad src/main.c src/serwo.c src/serwo_pwm.c )
 
-pico_set_program_name(pico_start "pico_start")
-pico_set_program_version(pico_start "0.1")
+pico_set_program_name(pico_quad "pico_quad")
+pico_set_program_version(pico_quad "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(pico_start 0)
-pico_enable_stdio_usb(pico_start 1)
+pico_enable_stdio_uart(pico_quad 0)
+pico_enable_stdio_usb(pico_quad 1)
 
 # Add the standard library to the build
-target_link_libraries(pico_start
-        pico_stdlib)
+target_link_libraries(pico_quad
+        pico_stdlib
+        hardware_pwm)
 
 # Add the standard include files to the build
-target_include_directories(pico_start PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
+target_include_directories(pico_quad PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/src
 )
 
-pico_add_extra_outputs(pico_start)
+pico_add_extra_outputs(pico_quad)
 
