@@ -3,9 +3,11 @@
 #include "pico/stdlib.h"
 #include "serwo.h"
 #include "serwo_pwm.h"
+#include "enkoder.h"
 
 // Stale
 #define ROZMIAR_BUFORA 32
+#define OKRES_ODCZYTU_US 100000
 
 // Main
 int main()
@@ -22,10 +24,12 @@ int main()
     };
 
     serwo_init(&serwo_test);
+    enkoder_init();
 
     char bufor[ROZMIAR_BUFORA];
     uint8_t pojemnosc_bufora = 0;
     bool bufor_overflow_flag = false;
+    uint32_t czas_ostatniego_odczytu = 0;
 
     while (1)
     {
@@ -72,6 +76,14 @@ int main()
 
         // printf("Pico dziala!\n");
         // sleep_ms(1000);
+
+        uint32_t teraz = time_us_32();
+
+        if (teraz - czas_ostatniego_odczytu >= OKRES_ODCZYTU_US)
+        {
+            printf("%lu,%u\n",teraz, czytaj_enkoder_raw());
+            czas_ostatniego_odczytu = teraz;
+        }
 
     }
 
