@@ -1,5 +1,6 @@
 // Biblioteki
 #include <stdio.h>
+#include <stdlib.h>
 #include "pico/stdlib.h"
 #include "serwo.h"
 #include "serwo_pwm.h"
@@ -7,7 +8,7 @@
 
 // Stale
 #define ROZMIAR_BUFORA 32
-#define OKRES_ODCZYTU_US 100000
+#define OKRES_ODCZYTU_US 100000 // Do testu odpowiedzi skokowej ustawic 5000
 
 // Main
 int main()
@@ -30,6 +31,7 @@ int main()
     uint8_t pojemnosc_bufora = 0;
     bool bufor_overflow_flag = false;
     uint32_t czas_ostatniego_odczytu = 0;
+    float zadany_kat = 0.0f;
 
     while (1)
     {
@@ -66,6 +68,13 @@ int main()
                     bufor[pojemnosc_bufora] = '\0';
                     printf("Odebrano: %s\n", bufor);
                     // printf("Warotsc_bufora: %d\n", pojemnosc_bufora);
+
+                    if (bufor[0] == 'S')
+                    {
+                        zadany_kat = strtof(bufor[1], NULL);
+                        serwo_ustaw_kat(&serwo_test, zadany_kat);
+                    }
+
                     pojemnosc_bufora = 0;
                 }
 
@@ -81,7 +90,8 @@ int main()
 
         if (teraz - czas_ostatniego_odczytu >= OKRES_ODCZYTU_US)
         {
-            printf("%lu,%u\n",teraz, czytaj_enkoder_raw());
+            uint16_t dane_z_enkodera = czytaj_enkoder_raw();
+            printf("%lu,%.2f,%.2f,%u\n", teraz, zadany_kat, aktualny_kat_serwa_deg(ENKODER_POLOZENIE_ZEROWE, dane_z_enkodera), dane_z_enkodera);
             czas_ostatniego_odczytu = teraz;
         }
 

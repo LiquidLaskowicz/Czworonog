@@ -25,3 +25,23 @@ uint16_t czytaj_enkoder_raw(void)
 
     return wynik;
 }
+
+// Zwracanie pozycji serwa w stopniach wzgledem polozenia zerowego
+float aktualny_kat_serwa_deg(uint16_t zero, uint16_t teraz)
+{
+    float przelicznik = 360/4096.0f;
+    float zero_deg = zero * przelicznik;
+    float teraz_deg = teraz * przelicznik;
+    float wynik = teraz_deg - zero_deg;
+
+    if(zero_deg < 90 && wynik > 180)
+    {
+        wynik = wynik - 360;
+    }
+    else if (zero_deg > 270 && wynik < -180)
+    {
+        wynik = wynik + 360;
+    }
+
+    return wynik;
+}
