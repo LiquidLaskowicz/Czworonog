@@ -3,4 +3,3 @@ build/
 .vscode/
 *.uf2
 *.elf
-ogolne/test_serwa_automat.py
