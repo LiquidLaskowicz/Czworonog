@@ -71,7 +71,7 @@ int main()
 
                     if (bufor[0] == 'S')
                     {
-                        zadany_kat = strtof(bufor[1], NULL);
+                        zadany_kat = strtof(bufor + 1, NULL);
                         serwo_ustaw_kat(&serwo_test, zadany_kat);
                     }
 
