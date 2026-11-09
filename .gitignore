@@ -5,3 +5,4 @@ build/
 *.elf
 *.csv
 ogolne/generator_danych_csv.py
+*.exe
