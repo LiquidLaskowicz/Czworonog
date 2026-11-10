@@ -96,7 +96,7 @@ int main(void)
         }
         if (fds[0].revents & (POLLIN))
         {
-            if (obsluga_telemetrii(fd, bufor, sizeof(bufor), &dlugosc) == -1) { close(fd); return 1; }
+            if (obsluga_telemetrii(fd, bufor, rozmiar, dlugosc) == -1) { return 1; }
         }
         if (fds[1].revents & (POLLIN | POLLHUP))
         {
