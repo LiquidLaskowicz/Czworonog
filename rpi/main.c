@@ -14,6 +14,13 @@
 #define RAMIE_R 1
 #define RAMIE_L 2
 
+static const float ZAKRES[3][2] =
+{
+    {-30, 30},
+    {10, 170},
+    {10, 170}
+};
+
 // Deklaracje funkcji
 static int obsluga_klawiatury(int fd, int *tryb);
 static int obsluga_telemetrii(int fd, char *bufor, size_t rozmiar, size_t *dlugosc);
@@ -47,8 +54,8 @@ static int obsluga_klawiatury(int fd, int *tryb)
     if (kanal < 0) {fprintf(stderr, "Brak obslugi pinu V%d\n", pin); return 0;}
     if (*tryb != 2) {fprintf(stderr, "To nie tryb testowy, ignoruje pin V%d\n", pin); return 0;}
 
-    if (wartosc > 30) {wartosc = 30;}
-    else if (wartosc < -30) { wartosc = -30;}
+    if (wartosc > ZAKRES[kanal][1]) {wartosc = ZAKRES[kanal][1];}
+    else if (wartosc < ZAKRES[kanal][0]) { wartosc = ZAKRES[kanal][0];}
 
     buduj_ramke_kat(komenda, sizeof(komenda), kanal, wartosc);
     if (wyslij_linie_lacze(fd, komenda) == -1) {fprintf(stderr, "Blad wysylania linii\n"); return -1;}
