@@ -23,17 +23,17 @@ int parsuj_ramke_kat(const char *linia, int *kanal, float *kat)
 {
     if (linia[0] != 'S' || linia[1] != ' ') { return 0; }
 
-    char *koniec;
-    long k = strtol(linia + 2, &koniec, 10);
+    char *koniec_kanalu;
+    long k = strtol(linia + 2, &koniec_kanalu, 10);
 
     if (k < 0 || k > 255) { return 0; }
-    if (koniec == linia + 2 || *koniec != ' ') { return 0; }
+    if (koniec_kanalu == linia + 2 || *koniec_kanalu != ' ') { return 0; }
 
-    char *koniec2;
-    float a = strtof(koniec, &koniec2);
+    char *koniec_kata;
+    float a = strtof(koniec_kanalu, &koniec_kata);
 
     if (!isfinite(a)) { return 0; }
-    if (koniec == koniec2) { return 0; }
+    if (koniec_kanalu == koniec_kata) { return 0; }
 
     *kanal = (int)k;
     *kat = a;
