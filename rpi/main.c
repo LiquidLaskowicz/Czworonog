@@ -19,6 +19,7 @@ static int obsluga_telemetrii (int fd, char *bufor, size_t rozmiar, size_t *dlug
 static int obsluga_klawiatury(int fd, int *tryb)
 {
     char linia[32];
+    char komenda[32];
 
     if(fgets(linia, sizeof(linia), stdin) == NULL)
     {
@@ -32,8 +33,16 @@ static int obsluga_klawiatury(int fd, int *tryb)
     if (n != 2) {fprintf(stderr, "Niepoprawna komenda\n"); return 0;}
     else if (pin == 3) {*tryb = (int)wartosc; fprintf(stderr, "Zmiana trybu na: %d\n", *tryb); return 0;}
     else if (pin == 0 && *tryb != 2) {fprintf(stderr, "Ignoruje V0: to nie tryb testowy\n"); return 0;}
-    else fprintf(stderr, "pin=%d wartosc=%.2f\n", pin, wartosc);
+    else if (pin == 0)
+    {
+        if (wartosc > 30) {wartosc = 30;}
+        else if (wartosc < -30) { wartosc = -30;}
 
+        buduj_ramke_kat(komenda, sizeof(komenda), wartosc);
+        if (wyslij_linie_lacze(fd, komenda) == -1) {fprintf(stderr, "Blad wysylania linii\n"); return -1;}
+        fprintf(stderr, "pin=%d wartosc=%.2f\n", pin, wartosc);
+    }
+    else {fprintf(stderr, "Tymczasowy brak obslugi pinu\n");}
     return 0;
 }
 
