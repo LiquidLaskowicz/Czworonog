@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(pico_quad src/main.c src/serwo.c src/serwo_pwm.c src/enkoder.c)
+add_executable(pico_quad src/main.c src/serwo.c src/serwo_pwm.c src/enkoder.c ../rpi/protokol.c)
 
 pico_set_program_name(pico_quad "pico_quad")
 pico_set_program_version(pico_quad "0.1")
@@ -46,12 +46,13 @@ pico_enable_stdio_usb(pico_quad 1)
 
 # Add the standard library to the build
 target_link_libraries(pico_quad
+        m
         pico_stdlib
         hardware_pwm
         hardware_i2c)
 
 # Add the standard include files to the build
-target_include_directories(pico_quad PRIVATE
+target_include_directories(pico_quad PRIVATE ../rpi
         ${CMAKE_CURRENT_LIST_DIR}/src
 )
 

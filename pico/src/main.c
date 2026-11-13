@@ -5,26 +5,50 @@
 #include "serwo.h"
 #include "serwo_pwm.h"
 #include "enkoder.h"
+#include "protokol.h"
 
 // Stale
 #define ROZMIAR_BUFORA 32
 #define OKRES_ODCZYTU_US 100000 // Do testu odpowiedzi skokowej ustawic 5000
+#define LICZBA_SERW 3
 
 // Main
 int main()
 {
     stdio_init_all();
 
-    serwo_t serwo_test = 
+    serwo_t serwa [LICZBA_SERW] = 
     {
-        .numer_pinu = 0,
-        .kierunek = 1,
-        .kat_minimalny_deg = -45,
-        .kat_maksymalny_deg = 45,
-        .trym_zera_us = 0
+        {   // Kanal 0: bark
+            .numer_pinu = 0,
+            .kierunek = 1,
+            .kat_minimalny_deg = -45,
+            .kat_maksymalny_deg = 45,
+            .trym_zera_us = 0
+        },
+
+        {   // Kanal 1: ramie_R
+            .numer_pinu = 1,
+            .kierunek = 1,
+            .kat_minimalny_deg = -45,
+            .kat_maksymalny_deg = 45,
+            .trym_zera_us = 0
+        },
+
+        {   // Kanal 2: ramie_L
+            .numer_pinu = 2,
+            .kierunek = 1,
+            .kat_minimalny_deg = -45,
+            .kat_maksymalny_deg = 45,
+            .trym_zera_us = 0
+        }
     };
 
-    serwo_init(&serwo_test);
+    for(int i = 0; i < LICZBA_SERW; i++)
+    {
+        serwo_init(&serwa[i]);
+    }
+
     enkoder_init();
 
     char bufor[ROZMIAR_BUFORA];
@@ -35,16 +59,12 @@ int main()
 
     while (1)
     {
-        // serwo_ustaw_kat(&serwo_test, -30);
-        // sleep_ms(2000);
-        // serwo_ustaw_kat(&serwo_test, 30);
-        // sleep_ms(2000);
-
         int temp_znak = getchar_timeout_us(0);
+        int kanal;
+        float kat;
 
         if (temp_znak != PICO_ERROR_TIMEOUT && bufor_overflow_flag != true)
         {
-            // printf("Odebrano: %c\n", temp_znak);
             if (pojemnosc_bufora == ROZMIAR_BUFORA - 1 && temp_znak != '\n')
             {
                 printf("Bufor przepelniony!, kasuje bufor\n");
@@ -67,12 +87,12 @@ int main()
                     }
                     bufor[pojemnosc_bufora] = '\0';
                     printf("Odebrano: %s\n", bufor);
-                    // printf("Warotsc_bufora: %d\n", pojemnosc_bufora);
 
-                    if (bufor[0] == 'S')
+                    if (parsuj_ramke_kat(bufor, &kanal, &kat) && kanal < LICZBA_SERW)
                     {
-                        zadany_kat = strtof(bufor + 1, NULL);
-                        serwo_ustaw_kat(&serwo_test, zadany_kat);
+                        serwo_ustaw_kat(&serwa[kanal], kat);
+
+                        if (kanal == 0) {zadany_kat = kat;}
                     }
 
                     pojemnosc_bufora = 0;
@@ -82,9 +102,6 @@ int main()
         }
         
         if (temp_znak == '\n') {bufor_overflow_flag = false;}
-
-        // printf("Pico dziala!\n");
-        // sleep_ms(1000);
 
         uint32_t teraz = time_us_32();
 
