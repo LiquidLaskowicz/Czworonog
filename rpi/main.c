@@ -69,11 +69,16 @@ static int obsluga_telemetrii(int fd, char *bufor, size_t rozmiar, size_t *dlugo
     return 0;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
 
-    int fd = otworz_lacze(PORT);
+    const char *port = PORT;
+
+    if (argc > 1) {port = argv[1];}
+
+    fprintf(stderr, "Port komunikacyjny: %s\n", port);
+    int fd = otworz_lacze(port);
     if (fd == -1) {fprintf(stderr, "Nie otwarto lacza komunikacji z pico\n"); return 1; }
     fprintf(stderr, "Otwarto lacze komunikacji z pico\n");
 
