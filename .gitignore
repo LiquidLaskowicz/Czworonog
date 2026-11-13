@@ -6,3 +6,4 @@ build/
 *.csv
 ogolne/generator_danych_csv.py
 *.exe
+blynk_tesst.py
