@@ -12,13 +12,12 @@
 #define PORT "/dev/ttyACM0"
 
 // Deklaracje funkcji
-static int obsluga_klawiatury (int fd);
+static int obsluga_klawiatury (int fd, int *tryb);
 static int obsluga_telemetrii (int fd, char *bufor, size_t rozmiar, size_t *dlugosc);
 
 // Definicja funkcji do obslugi klawaitury
-static int obsluga_klawiatury(int fd)
+static int obsluga_klawiatury(int fd, int *tryb)
 {
-    char komenda[32];
     char linia[32];
 
     if(fgets(linia, sizeof(linia), stdin) == NULL)
@@ -26,21 +25,14 @@ static int obsluga_klawiatury(int fd)
         return 1;
     }
 
-    char *koniec;
-    float kat = strtof(linia, &koniec);
-    if (koniec == linia)
-    {
-        fprintf(stderr, "Niepoprawna wartosc kata\n");
-    }
-    else
-    {
-        buduj_ramke_kat(komenda, sizeof(komenda), kat);
-        if(wyslij_linie_lacze(fd, komenda) == -1)
-        {
-            fprintf(stderr, "Blad wysylania danych do pico\n");
-            return -1;
-        }
-    }
+    int pin;
+    float wartosc;
+    int n = sscanf(linia, "V%d %f", &pin, &wartosc);
+
+    if (n != 2) {fprintf(stderr, "Niepoprawna komenda\n"); return 0;}
+    else if (pin == 3) {*tryb = (int)wartosc; fprintf(stderr, "Zmiana trybu na: %d\n", *tryb); return 0;}
+    else if (pin == 0 && *tryb != 2) {fprintf(stderr, "Ignoruje V0: to nie tryb testowy\n"); return 0;}
+    else fprintf(stderr, "pin=%d wartosc=%.2f\n", pin, wartosc);
 
     return 0;
 }
@@ -87,6 +79,8 @@ int main(void)
 
     printf("czas_us,zadany,zmierzony_deg,surowy\n");
 
+    int tryb = 0;
+
     while(1)
     {
         int ile = poll(fds, 2, 100);
@@ -103,7 +97,7 @@ int main(void)
         }
         if (fds[1].revents & (POLLIN | POLLHUP))
         {
-            int obsklaw = obsluga_klawiatury(fd);
+            int obsklaw = obsluga_klawiatury(fd, &tryb);
             if (obsklaw == 1) { close(fd); return 0; }
             if (obsklaw == -1) { close(fd); return 1; }
         }
