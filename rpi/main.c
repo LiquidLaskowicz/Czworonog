@@ -10,10 +10,14 @@
 
 // Definicje parametrow
 #define PORT "/dev/ttyACM0"
+#define BARK 0
+#define RAMIE_R 1
+#define RAMIE_L 2
 
 // Deklaracje funkcji
-static int obsluga_klawiatury (int fd, int *tryb);
-static int obsluga_telemetrii (int fd, char *bufor, size_t rozmiar, size_t *dlugosc);
+static int obsluga_klawiatury(int fd, int *tryb);
+static int obsluga_telemetrii(int fd, char *bufor, size_t rozmiar, size_t *dlugosc);
+static int pin_na_kanal(int pin);
 
 // Definicja funkcji do obslugi klawaitury
 static int obsluga_klawiatury(int fd, int *tryb)
@@ -31,18 +35,25 @@ static int obsluga_klawiatury(int fd, int *tryb)
     int n = sscanf(linia, "V%d %f", &pin, &wartosc);
 
     if (n != 2) {fprintf(stderr, "Niepoprawna komenda\n"); return 0;}
-    else if (pin == 3) {*tryb = (int)wartosc; fprintf(stderr, "Zmiana trybu na: %d\n", *tryb); return 0;}
-    else if (pin == 0 && *tryb != 2) {fprintf(stderr, "Ignoruje V0: to nie tryb testowy\n"); return 0;}
-    else if (pin == 0)
-    {
-        if (wartosc > 30) {wartosc = 30;}
-        else if (wartosc < -30) { wartosc = -30;}
+    if (pin == 3)
+        {
+            int nowy_tryb = (int)wartosc;
+            if (nowy_tryb < 0 || nowy_tryb > 2) {fprintf(stderr, "Nieprawidlowy numer trybu %d\n", nowy_tryb); return 0;}
+            *tryb = nowy_tryb; fprintf(stderr, "Zmiana trybu na: %d\n", *tryb); return 0;
+        }
+    
+    int kanal = pin_na_kanal(pin);
 
-        buduj_ramke_kat(komenda, sizeof(komenda), wartosc);
-        if (wyslij_linie_lacze(fd, komenda) == -1) {fprintf(stderr, "Blad wysylania linii\n"); return -1;}
-        fprintf(stderr, "pin=%d wartosc=%.2f\n", pin, wartosc);
-    }
-    else {fprintf(stderr, "Tymczasowy brak obslugi pinu\n");}
+    if (kanal < 0) {fprintf(stderr, "Brak obslugi pinu V%d\n", pin); return 0;}
+    if (*tryb != 2) {fprintf(stderr, "To nie tryb testowy, ignoruje pin V%d\n", pin); return 0;}
+
+    if (wartosc > 30) {wartosc = 30;}
+    else if (wartosc < -30) { wartosc = -30;}
+
+    buduj_ramke_kat(komenda, sizeof(komenda), kanal, wartosc);
+    if (wyslij_linie_lacze(fd, komenda) == -1) {fprintf(stderr, "Blad wysylania linii\n"); return -1;}
+    fprintf(stderr, "pin=%d wartosc=%.2f\n", pin, wartosc);
+
     return 0;
 }
 
@@ -67,6 +78,15 @@ static int obsluga_telemetrii(int fd, char *bufor, size_t rozmiar, size_t *dlugo
     }
 
     return 0;
+}
+
+// Definicja funkcji ktora zwraca odpowiedni kanal dla pinow 0 1 2 i -1 dla pozostalych pinow
+static int pin_na_kanal(int pin)
+{
+    if (pin == 0) { return 0; }
+    else if (pin == 1) { return 1; }
+    else if (pin == 2) { return 2; }
+    else { return -1; }
 }
 
 int main(int argc, char *argv[])

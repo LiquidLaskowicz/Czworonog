@@ -8,11 +8,16 @@ int main (void)
 {
     // Test budowy ramki
     char bufor[32];
-    int n = buduj_ramke_kat(bufor, sizeof(bufor), 10.0f);
-    assert(n==8);
-    assert(strcmp(bufor, "S 10.00\n") == 0);
+    int n = buduj_ramke_kat(bufor, sizeof(bufor), 0, 10.0f);
+    assert(n==10);
+    assert(strcmp(bufor, "S 0 10.00\n") == 0);
 
     printf("Test ramki ok\n");
+
+    // Test ramki dla innego kanalu i wartosci kata
+    n = buduj_ramke_kat(bufor, sizeof(bufor), 2, -5.50f);
+    assert(n==10);
+    assert(strcmp(bufor, "S 2 -5.50\n") == 0);
 
     // Test parsowania telemetrii
     uint32_t czas = 0;

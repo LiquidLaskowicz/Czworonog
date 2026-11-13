@@ -4,9 +4,9 @@
 #include <inttypes.h>
 
 // Funkcja formujaca ramke do przekaznywania zadanego kata
-int buduj_ramke_kat(char *bufor, size_t rozmiar, float kat)
+int buduj_ramke_kat(char *bufor, size_t rozmiar, int kanal, float kat)
 {
-    return snprintf(bufor, rozmiar, "S %.2f\n", kat);
+    return snprintf(bufor, rozmiar, "S %d %.2f\n", kanal, kat);
 }
 
 // Funkcja parsujaca dane z pico
