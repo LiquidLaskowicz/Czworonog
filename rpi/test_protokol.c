@@ -32,5 +32,19 @@ int main (void)
 
     printf("Test parsu telemetrii ok\n");
 
+    int kanal = -1;
+    float kat = 0;
+
+    assert(parsuj_ramke_kat("S 2 -5.50", &kanal, &kat) == 1);
+    assert(kanal == 2);
+    assert(kat == -5.50f);
+    assert(parsuj_ramke_kat("S 30.00", &kanal, &kat) == 0);
+    assert(parsuj_ramke_kat("S 2.00", &kanal, &kat) == 0);
+    assert(parsuj_ramke_kat("S 2 nan", &kanal, &kat) == 0);
+    assert(parsuj_ramke_kat("S 300 5", &kanal, &kat) == 0);
+    assert(parsuj_ramke_kat("S 2", &kanal, &kat) == 0);
+
+    printf("Test parsowania ramki OK\n");
+
     return 0;
 }
