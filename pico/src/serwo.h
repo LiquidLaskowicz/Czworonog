@@ -19,6 +19,7 @@ typedef struct
     float kat_minimalny_deg;
     float kat_maksymalny_deg;
     float trym_zera_us; // korekta zera serwa
+    float offset_deg; // kat wzgledem srodka serwa
 
 }serwo_t;
 

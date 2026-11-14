@@ -5,6 +5,7 @@
 // Zamiana pozadanego kata na impuls dla sterownika serwa
 uint16_t kat_na_impuls(const serwo_t *s, float kat_deg)
 {
+    kat_deg = kat_deg - s->offset_deg;
 
     if (kat_deg < s->kat_minimalny_deg) {kat_deg = s->kat_minimalny_deg;}
     else if (kat_deg > s->kat_maksymalny_deg) {kat_deg = s->kat_maksymalny_deg;}
