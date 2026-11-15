@@ -6,6 +6,7 @@
 #include "serwo_pwm.h"
 #include "enkoder.h"
 #include "protokol.h"
+#include "przekaznik.h"
 
 // Stale
 #define ROZMIAR_BUFORA 32
@@ -15,6 +16,8 @@
 // Main
 int main()
 {
+    przekaznik_init(PRZEKAZNIK_NOGA_A_PIN);
+    przekaznik_init(PRZEKAZNIK_NOGA_B_PIN);
     stdio_init_all();
 
     serwo_t serwa [LICZBA_SERW] = 
@@ -32,7 +35,8 @@ int main()
             .kierunek = 1,
             .kat_minimalny_deg = -45,
             .kat_maksymalny_deg = 45,
-            .trym_zera_us = 0
+            .trym_zera_us = 0,
+            .offset_deg = 90
         },
 
         {   // Kanal 2: ramie_L
@@ -40,13 +44,15 @@ int main()
             .kierunek = 1,
             .kat_minimalny_deg = -45,
             .kat_maksymalny_deg = 45,
-            .trym_zera_us = 0
+            .trym_zera_us = 0,
+            .offset_deg = 90
         }
     };
 
     for(int i = 0; i < LICZBA_SERW; i++)
     {
         serwo_init(&serwa[i]);
+        serwo_ustaw_kat(&serwa[i], serwa[i].offset_deg);
     }
 
     enkoder_init();

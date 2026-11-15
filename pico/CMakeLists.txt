@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(pico_quad src/main.c src/serwo.c src/serwo_pwm.c src/enkoder.c ../rpi/protokol.c)
+add_executable(pico_quad src/main.c src/serwo.c src/serwo_pwm.c src/enkoder.c ../rpi/protokol.c src/przekaznik.c)
 
 pico_set_program_name(pico_quad "pico_quad")
 pico_set_program_version(pico_quad "0.1")
