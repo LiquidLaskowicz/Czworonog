@@ -25,6 +25,7 @@ static const float ZAKRES[3][2] =
 static int obsluga_klawiatury(int fd, int *tryb);
 static int obsluga_telemetrii(int fd, char *bufor, size_t rozmiar, size_t *dlugosc);
 static int pin_na_kanal(int pin);
+static void wylacz_zasilanie(int fd);
 
 // Definicja funkcji do obslugi klawaitury
 static int obsluga_klawiatury(int fd, int *tryb)
@@ -44,9 +45,18 @@ static int obsluga_klawiatury(int fd, int *tryb)
     if (n != 2) {fprintf(stderr, "Niepoprawna komenda\n"); return 0;}
     if (pin == 3)
         {
+            int stary_tryb = *tryb;
             int nowy_tryb = (int)wartosc;
             if (nowy_tryb < 0 || nowy_tryb > 2) {fprintf(stderr, "Nieprawidlowy numer trybu %d\n", nowy_tryb); return 0;}
-            *tryb = nowy_tryb; fprintf(stderr, "Zmiana trybu na: %d\n", *tryb); return 0;
+            *tryb = nowy_tryb; fprintf(stderr, "Zmiana trybu na: %d\n", *tryb);
+            if (stary_tryb == 2 && nowy_tryb != 2)
+            {
+                buduj_ramke_zasilanie(komenda, sizeof(komenda), 0, 0);
+                if (wyslij_linie_lacze(fd, komenda) == -1) {fprintf(stderr, "Blad wysylania linii\n"); return -1;}
+                fprintf(stderr, "Wyjscie z trybu 2, zasilanie wylaczone\n");
+            }
+
+            return 0;
         }
     if (pin == 9)
     {
@@ -110,6 +120,14 @@ static int pin_na_kanal(int pin)
     else { return -1; }
 }
 
+static void wylacz_zasilanie(int fd)
+{
+    char komenda[32];
+
+    buduj_ramke_zasilanie(komenda, sizeof(komenda), 0, 0);
+    wyslij_linie_lacze(fd, komenda);
+}
+
 int main(int argc, char *argv[])
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
@@ -139,11 +157,12 @@ int main(int argc, char *argv[])
     while(1)
     {
         int ile = poll(fds, 2, 100);
-        if (ile < 0) {fprintf(stderr, "Blad poll\n"); close (fd); return 1; }
+        if (ile < 0) {fprintf(stderr, "Blad poll\n"); wylacz_zasilanie(fd); close (fd); return 1; }
         if (fds[0].revents & ( POLLHUP | POLLERR))
         {
             fprintf(stderr, "Lacze z pico zamkniete\n");
             close(fd);
+
             return 1;
         }
         if (fds[0].revents & (POLLIN))
@@ -153,8 +172,8 @@ int main(int argc, char *argv[])
         if (fds[1].revents & (POLLIN | POLLHUP))
         {
             int obsklaw = obsluga_klawiatury(fd, &tryb);
-            if (obsklaw == 1) { close(fd); return 0; }
-            if (obsklaw == -1) { close(fd); return 1; }
+            if (obsklaw == 1) { wylacz_zasilanie(fd); close(fd); return 0; }
+            if (obsklaw == -1) { wylacz_zasilanie(fd); close(fd); return 1; }
         }
     }
 
