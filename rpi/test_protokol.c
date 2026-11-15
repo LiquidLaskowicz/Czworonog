@@ -6,7 +6,7 @@
 
 int main (void)
 {
-    // Test budowy ramki
+    // Test budowy ramki dla serwa
     char bufor[32];
     int n = buduj_ramke_kat(bufor, sizeof(bufor), 0, 10.0f);
     assert(n==10);
@@ -35,6 +35,7 @@ int main (void)
     int kanal = -1;
     float kat = 0;
 
+    // Testy ramek
     assert(parsuj_ramke_kat("S 2 -5.50", &kanal, &kat) == 1);
     assert(kanal == 2);
     assert(kat == -5.50f);
@@ -45,6 +46,47 @@ int main (void)
     assert(parsuj_ramke_kat("S 2", &kanal, &kat) == 0);
 
     printf("Test parsowania ramki OK\n");
+
+    int noga = -1;
+    int stan = -1;
+
+    // Test parsowania ramki zasilania
+    assert(parsuj_ramke_zasilanie("Z 0 1", &noga, &stan) == 1);
+    assert(noga == 0);
+    assert(stan == 1);
+
+    assert(parsuj_ramke_zasilanie("Z 1 0", &noga, &stan) == 1);
+    assert(noga == 1);
+    assert(stan == 0);
+
+    assert(parsuj_ramke_zasilanie("Z 2 1", &noga, &stan) == 0);
+    assert(parsuj_ramke_zasilanie("Z 0 5", &noga, &stan) == 0);
+    assert(parsuj_ramke_zasilanie("Z 0 1.5", &noga, &stan) == 0);
+    assert(parsuj_ramke_zasilanie("Z 0 1x", &noga, &stan) == 0);
+    assert(parsuj_ramke_zasilanie("Z 0", &noga, &stan) == 0);
+    assert(parsuj_ramke_zasilanie("", &noga, &stan) == 0);
+
+    noga = 5;
+    stan = 5;
+    
+    assert(parsuj_ramke_zasilanie("Z 2 1", &noga, &stan) == 0);
+    assert(noga == 5);
+    assert(stan == 5);
+
+    printf("Test ramki zasilania OK\n");
+
+    // Test budowania ramki dla zasilania
+    n = buduj_ramke_zasilanie(bufor, sizeof(bufor), 1, 0);
+    
+    assert(n == 6);
+    assert(strcmp(bufor, "Z 1 0\n") == 0);
+
+    n = buduj_ramke_zasilanie(bufor, sizeof(bufor), 0, 1);
+    
+    assert(n == 6);
+    assert(strcmp(bufor, "Z 0 1\n") == 0);
+
+    printf("Test budowy ramki zasilania OK\n");
 
     return 0;
 }

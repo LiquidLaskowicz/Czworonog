@@ -40,3 +40,30 @@ int parsuj_ramke_kat(const char *linia, int *kanal, float *kat)
 
     return 1;
 }
+
+// Funkcja parsujaca ramke sygnalu sterowania nogi
+int parsuj_ramke_zasilanie(const char *linia, int *noga, int *stan)
+{
+    int n;
+    int s;
+    int pozycja;
+
+    int wczytane = sscanf(linia, "Z %d %d%n", &n, &s, &pozycja);
+
+    if (wczytane != 2) { return 0; }
+    while (linia[pozycja] == ' ' || linia[pozycja] == '\n' || linia[pozycja] == '\r') { pozycja++; }
+    if(linia[pozycja] != '\0') { return 0; }
+
+    if (n < 0 || n > 1 || s < 0 || s > 1) { return 0; }
+
+    *noga = n;
+    *stan = s;
+
+    return 1;
+}
+
+// Funkcja budujaca ramke danych do sterowania przekaznikiem zasilania
+int buduj_ramke_zasilanie(char *bufor, size_t rozmiar, int noga, int stan)
+{
+    return snprintf(bufor, rozmiar, "Z %d %d\n", noga, stan);
+}

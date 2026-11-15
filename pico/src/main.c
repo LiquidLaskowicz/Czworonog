@@ -69,6 +69,9 @@ int main()
         int kanal;
         float kat;
 
+        int noga;
+        int stan;
+
         if (temp_znak != PICO_ERROR_TIMEOUT && bufor_overflow_flag != true)
         {
             if (pojemnosc_bufora == ROZMIAR_BUFORA - 1 && temp_znak != '\n')
@@ -99,6 +102,12 @@ int main()
                         serwo_ustaw_kat(&serwa[kanal], kat);
 
                         if (kanal == 0) {zadany_kat = kat;}
+                    }
+                    if (parsuj_ramke_zasilanie(bufor, &noga, &stan))
+                    {
+                        if (noga == 0) { przekaznik_zasilanie(PRZEKAZNIK_NOGA_A_PIN, stan == 1); }
+                        if (noga == 1) { przekaznik_zasilanie(PRZEKAZNIK_NOGA_B_PIN, stan == 1); }
+
                     }
 
                     pojemnosc_bufora = 0;
