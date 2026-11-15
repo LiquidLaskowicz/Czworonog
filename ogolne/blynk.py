@@ -8,7 +8,7 @@ HOST = os.environ.get("BLYNK_HOST", "blynk.cloud")
 PORT = 8883  # TLS
 KEEPALIVE = 45  # zalecane przez Blynk
 GRACE_S = float(os.environ.get("BLYNK_GRACE", "2"))
-PINY_SERW = {"V0", "V1", "V2", "V8"}
+PINY_SERW = {"V0", "V1", "V2", "V8", "V9"}
 
 polaczono_o = 0.0
 
