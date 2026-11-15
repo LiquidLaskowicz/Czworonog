@@ -33,5 +33,38 @@ int main(void)
 
     printf("Test pozycji nieosiagalnej OK\n");
 
+    double bark;
+    double udo_F;
+    double udo_B;
+
+    ko = kin_nogi_serwa(0, 0.0, 0.0, &bark, &udo_F, &udo_B);
+    assert(ko == 1);
+    assert(fabs(bark) < 1e-2);
+    assert(fabs(udo_F - 95.077) < 1e-2);
+    assert(fabs(udo_B - 85.273) < 1e-2);
+
+    printf("Test nogi 0 (1) OK\n");
+
+    ko = kin_nogi_serwa(0, 0.07, 0.08, &bark, &udo_F, &udo_B);
+    assert(ko == 1);
+    assert(fabs(bark - 9.778) < 1e-2);
+    assert(fabs(udo_F - 115.478) < 1e-2);
+    assert(fabs(udo_B - 67.715) < 1e-2);
+
+    printf("Test nogi 0 (2) OK\n");
+
+    ko = kin_nogi_serwa(1, 0.07, 0.0, &bark, &udo_F, &udo_B);
+    assert(ko == 1);
+    assert(fabs(bark - 9.778) < 1e-2);
+    assert(fabs(udo_F - 88.256) < 1e-2);
+    assert(fabs(udo_B - 91.822) < 1e-2);
+
+    printf("Test nogi 1 OK\n");
+
+    ko = kin_nogi_serwa(4, 0.0, 0.0, &bark, &udo_F, &udo_B);
+    assert(ko == 0);
+
+    printf("Test blednej nogi OK\n");
+
     return 0;
 }
