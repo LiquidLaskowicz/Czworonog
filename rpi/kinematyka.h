@@ -14,6 +14,8 @@
 #define ZAPAS_WYSOKOSCI 0.02
 #define WYSOKOSC_BARK_STOPA (LINIA_BIODER_NAD_BARKIEM - (ZLACZE_LYDKI_W + STOPA_PRZES_W))
 #define OFFSET_UDA_DEG 90
+#define PRZECHYL 0.04
+#define PODNIESIENIE 0.03
 
 // Deklaracje funkcji
 void kinematyka_init(void);

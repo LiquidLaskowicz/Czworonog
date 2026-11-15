@@ -42,17 +42,36 @@ static void wypisz_noge(int noga, double przechyl, double podniesienie)
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3) { fprintf(stderr, "Uzycie: pozycje <pico 0|1> <poza>\n"); return 1;}
+    if (argc > 4 || argc < 3) { fprintf(stderr, "Pozycje <pico 0|1> <poza>\n"); return 1;}
 
     int pico;
     int wczytane = sscanf(argv[1], "%d", &pico);
     if (wczytane != 1 || pico < 0 || pico > 1) {fprintf(stderr, "Nieprawidlowy numer pico\n"); return 1;}
+    double przechyl;
 
     kinematyka_init();
 
     if (strcmp(argv[2], "stoj") == 0)
     {
+        if (argc != 3) { fprintf(stderr, "Pozycje <pico 0|1> <poza>\n"); return 1;}
         for (int i = 0; i < 2; i++) { wypisz_noge(2*pico + i, 0.0, 0.0); }
+    }
+    else if (strcmp(argv[2], "podnies") == 0)
+    {
+        if (argc != 4) { fprintf(stderr, "Pozycje <pico 0|1> <poza>\n"); return 1;}
+        int noga;
+        wczytane = sscanf(argv[3], "%d", &noga);
+        if (wczytane != 1 || noga < 0 || noga > 3) {fprintf(stderr, "Nieprawidlowy numer nogi\n"); return 1;}
+
+        if (noga == 0 || noga == 2) { przechyl = PRZECHYL; }
+        else { przechyl = -PRZECHYL; }
+
+        for (int i = 0; i < 2; i++)
+        {
+            if (2*pico + i == noga) { wypisz_noge(2*pico + i, przechyl, PODNIESIENIE); }
+            else { wypisz_noge(2*pico + i, przechyl, 0.0); }
+        }
+
     }
     else { fprintf(stderr, "Nieznana poza\n"); return 1; }
 
