@@ -13,9 +13,11 @@
 #define LINIA_BIODER_NAD_BARKIEM 0.04
 #define ZAPAS_WYSOKOSCI 0.02
 #define WYSOKOSC_BARK_STOPA (LINIA_BIODER_NAD_BARKIEM - (ZLACZE_LYDKI_W + STOPA_PRZES_W))
+#define OFFSET_UDA_DEG 90
 
 // Deklaracje funkcji
 void kinematyka_init(void);
 int kin_odw_noga(double fu, double fw, double *thF, double *thB);
+int kin_nogi_serwa(int noga, double przechyl, double podniesienie, double *bark_deg, double *udo_F_deg, double *udo_B_deg);
 
 #endif

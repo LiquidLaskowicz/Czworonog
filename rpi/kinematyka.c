@@ -13,12 +13,20 @@ static const double PRZESUNIECIE_PLASZCZYZNY[4] =
     0.0397,
     0.0397
 };
+static const int ZNAK[4] =
+{
+    1,
+    -1,
+    -1,
+    1
+};
 
 // Deklaracje funkcji
 static double zawin_kat(double a);
 static int punkt_kolana(double hu, double ju, double jw, double na_zewnatrz, double *ku, double *kw);
 void kinematyka_init(void);
 static int kin_pozycja_nogi(int noga, double przechyl, double podniesienie, double *bark_rad, double *fh);
+static double rad_na_stopnie(double rad);
 
 // Funkcja zawijajaca kat do danego zakresu <-PI; PI>
 static double zawin_kat(double a)
@@ -118,7 +126,7 @@ int kin_odw_noga(double fu, double fw, double *thF, double *thB)
     return 1;
 }
 
-// Funkcja ustawiajaca noge na podstawie wyniku kinematyki odwrotnej
+// Funkcja liczy kat barku i wysokosc stopy dla zadanego przechylu ciala i podniesienia nogi
 static int kin_pozycja_nogi(int noga, double przechyl, double podniesienie, double *bark_rad, double *fh)
 {
     if (noga < 0 || noga > 3 ) { return 0; }
@@ -130,6 +138,32 @@ static int kin_pozycja_nogi(int noga, double przechyl, double podniesienie, doub
 
     double zp = ((-WYSOKOSC_BARK_STOPA - PRZESUNIECIE_PLASZCZYZNY[noga] * sin(*bark_rad)) / cos(*bark_rad));
     *fh = zp + LINIA_BIODER_NAD_BARKIEM + podniesienie + ZAPAS_WYSOKOSCI;
+
+    return 1;
+}
+
+static double rad_na_stopnie(double rad)
+{
+    return rad * (180 / PI);
+}
+
+// Funkcja liczy katy serw jednej nogi dla zadanego przechylu i podniesienia
+int kin_nogi_serwa(int noga, double przechyl, double podniesienie, double *bark_deg, double *udo_F_deg, double *udo_B_deg)
+{
+    double bark_rad;
+    double fh;
+    double thF;
+    double thB;
+
+    int pk = kin_pozycja_nogi(noga, przechyl, podniesienie, &bark_rad, &fh);
+    if (!pk) { return 0; }
+
+    int ok = kin_odw_noga(0.0, fh, &thF, &thB);
+    if (!ok) { return 0; }
+
+    *bark_deg = ZNAK[noga] * rad_na_stopnie(bark_rad);
+    *udo_F_deg = OFFSET_UDA_DEG + ZNAK[noga] * rad_na_stopnie(thF);
+    *udo_B_deg = OFFSET_UDA_DEG + ZNAK[noga] * rad_na_stopnie(thB);
 
     return 1;
 }
