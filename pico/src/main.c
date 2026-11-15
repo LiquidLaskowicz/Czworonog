@@ -11,7 +11,9 @@
 // Stale
 #define ROZMIAR_BUFORA 32
 #define OKRES_ODCZYTU_US 100000 // Do testu odpowiedzi skokowej ustawic 5000
-#define LICZBA_SERW 3
+#define LICZBA_SERW 6
+#define PREDKOSC_MAX_DEG_S 30.0f
+#define OKRES_RAMPY_US 20000
 
 // Main
 int main()
@@ -22,7 +24,7 @@ int main()
 
     serwo_t serwa [LICZBA_SERW] = 
     {
-        {   // Kanal 0: bark
+        {   // Kanal 0: bark1
             .numer_pinu = 0,
             .kierunek = 1,
             .kat_minimalny_deg = -45,
@@ -30,7 +32,7 @@ int main()
             .trym_zera_us = 0
         },
 
-        {   // Kanal 1: ramie_R
+        {   // Kanal 1: ramie_R1
             .numer_pinu = 1,
             .kierunek = 1,
             .kat_minimalny_deg = -45,
@@ -39,8 +41,35 @@ int main()
             .offset_deg = 90
         },
 
-        {   // Kanal 2: ramie_L
+        {   // Kanal 2: ramie_L1
             .numer_pinu = 2,
+            .kierunek = 1,
+            .kat_minimalny_deg = -45,
+            .kat_maksymalny_deg = 45,
+            .trym_zera_us = 0,
+            .offset_deg = 90
+        },
+
+        {   // Kanal 3: bark2
+            .numer_pinu = 3,
+            .kierunek = 1,
+            .kat_minimalny_deg = -45,
+            .kat_maksymalny_deg = 45,
+            .trym_zera_us = 0,
+            .offset_deg = 0
+        },
+
+        {   // Kanal 4: ramie_R2
+            .numer_pinu = 4,
+            .kierunek = 1,
+            .kat_minimalny_deg = -45,
+            .kat_maksymalny_deg = 45,
+            .trym_zera_us = 0,
+            .offset_deg = 90
+        },
+
+        {   // Kanal 5: ramie_L2
+            .numer_pinu = 5,
             .kierunek = 1,
             .kat_minimalny_deg = -45,
             .kat_maksymalny_deg = 45,
@@ -49,19 +78,25 @@ int main()
         }
     };
 
+    float aktualny_kat[LICZBA_SERW];
+    float cel_kat[LICZBA_SERW];
+
     for(int i = 0; i < LICZBA_SERW; i++)
     {
         serwo_init(&serwa[i]);
         serwo_ustaw_kat(&serwa[i], serwa[i].offset_deg);
+        aktualny_kat[i] = serwa[i].offset_deg;
+        cel_kat[i] = serwa[i].offset_deg;
     }
 
-    enkoder_init();
+    if (ENKODERY_PODLACZONE) { enkoder_init(); }
 
     char bufor[ROZMIAR_BUFORA];
     uint8_t pojemnosc_bufora = 0;
     bool bufor_overflow_flag = false;
     uint32_t czas_ostatniego_odczytu = 0;
     float zadany_kat = 0.0f;
+    uint32_t czas_ostatniej_rampy = 0;
 
     while (1)
     {
@@ -99,8 +134,7 @@ int main()
 
                     if (parsuj_ramke_kat(bufor, &kanal, &kat) && kanal < LICZBA_SERW)
                     {
-                        serwo_ustaw_kat(&serwa[kanal], kat);
-
+                        cel_kat[kanal] = kat;
                         if (kanal == 0) {zadany_kat = kat;}
                     }
                     if (parsuj_ramke_zasilanie(bufor, &noga, &stan))
@@ -116,17 +150,38 @@ int main()
             }
         }
         
-        if (temp_znak == '\n') {bufor_overflow_flag = false;}
+        if (temp_znak == '\n') { bufor_overflow_flag = false; }
 
         uint32_t teraz = time_us_32();
 
-        if (teraz - czas_ostatniego_odczytu >= OKRES_ODCZYTU_US)
+        if (ENKODERY_PODLACZONE) 
         {
-            uint16_t dane_z_enkodera = czytaj_enkoder_raw();
-            printf("%lu,%.2f,%.2f,%u\n", teraz, zadany_kat, aktualny_kat_serwa_deg(ENKODER_POLOZENIE_ZEROWE, dane_z_enkodera), dane_z_enkodera);
-            czas_ostatniego_odczytu = teraz;
+            if (teraz - czas_ostatniego_odczytu >= OKRES_ODCZYTU_US) 
+            {
+                uint16_t dane_z_enkodera = czytaj_enkoder_raw();
+                printf("%lu,%.2f,%.2f,%u\n", teraz, zadany_kat, aktualny_kat_serwa_deg(ENKODER_POLOZENIE_ZEROWE, dane_z_enkodera), dane_z_enkodera);
+                czas_ostatniego_odczytu = teraz;
+            }
         }
+        
+        if (teraz - czas_ostatniej_rampy >= OKRES_RAMPY_US) 
+        {    
+            czas_ostatniej_rampy = teraz;
+            float krok;
+            krok = PREDKOSC_MAX_DEG_S * (OKRES_RAMPY_US / 1e6f);
 
+            for (int i = 0; i < 6; i++)
+                {
+                    float roznica_kat;
+
+                    roznica_kat = cel_kat[i] - aktualny_kat[i];
+                    if (roznica_kat > krok) { roznica_kat = krok; }
+                    if (roznica_kat < -krok) { roznica_kat = -krok; }
+
+                    aktualny_kat[i] += roznica_kat;
+                    serwo_ustaw_kat(&serwa[i], aktualny_kat[i]);
+                }
+        }
     }
 
     return 0;

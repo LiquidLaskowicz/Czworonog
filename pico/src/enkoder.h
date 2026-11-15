@@ -11,6 +11,7 @@
 #define ENKODER_SCL1 15
 #define ENKODER_ADRES_UKLADU 0x36
 #define ENKODER_ADRES_REJESTRU_KATA 0x0C
+#define ENKODERY_PODLACZONE 0 // jak podpiete to 1
 
 #define ENKODER_POLOZENIE_ZEROWE 2048 // Podmienic przy testach
 
