@@ -48,7 +48,21 @@ static int obsluga_klawiatury(int fd, int *tryb)
             if (nowy_tryb < 0 || nowy_tryb > 2) {fprintf(stderr, "Nieprawidlowy numer trybu %d\n", nowy_tryb); return 0;}
             *tryb = nowy_tryb; fprintf(stderr, "Zmiana trybu na: %d\n", *tryb); return 0;
         }
-    
+    if (pin == 9)
+    {
+        int stan = 0;
+        if (wartosc != 0) { stan = 1; }
+
+        if (*tryb != 2 && wartosc != 0) {fprintf(stderr, "Wlaczenie zasilania mozliwe tylko w trybie 2!\n");  return 0; }
+        
+        buduj_ramke_zasilanie(komenda, sizeof(komenda), 0, stan);
+        if (wyslij_linie_lacze(fd, komenda) == -1) {fprintf(stderr, "Blad wysylania linii\n"); return -1;}
+        fprintf(stderr, "noga=%d stan=%d\n", 0, stan);
+
+        return 0;
+
+    }
+
     int kanal = pin_na_kanal(pin);
 
     if (kanal < 0) {fprintf(stderr, "Brak obslugi pinu V%d\n", pin); return 0;}
