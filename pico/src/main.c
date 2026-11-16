@@ -170,7 +170,7 @@ int main()
             float krok;
             krok = PREDKOSC_MAX_DEG_S * (OKRES_RAMPY_US / 1e6f);
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < LICZBA_SERW; i++)
                 {
                     float roznica_kat;
 
