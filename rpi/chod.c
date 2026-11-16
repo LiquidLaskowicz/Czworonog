@@ -1,6 +1,7 @@
 // Biblioteki
 #include "chod.h"
 #include "kinematyka.h"
+#include <stddef.h>
 
 static const int KOLEJNOSC_NOG[LICZBA_NOG]=
 {
@@ -10,6 +11,39 @@ static const int KOLEJNOSC_NOG[LICZBA_NOG]=
     1
 };
 
+static const faza_t FAZY[LICZBA_FAZ]=
+{
+    {
+        .przechyl = 1,
+        .uniesienie = 0,
+        .przod = 0
+    },
+    
+    {
+        .przechyl = 1,
+        .uniesienie = 1,
+        .przod = 0
+    },
+
+    {
+        .przechyl = 1,
+        .uniesienie = 1,
+        .przod = 1
+    },
+
+    {
+        .przechyl = 1,
+        .uniesienie = 0,
+        .przod = 1
+    },
+
+    {
+        .przechyl = 0,
+        .uniesienie = 0,
+        .przod = 1
+    }
+};
+
 // Funkcja zwracajaca numer przenoszonej nogi
 int chod_noga_przenoszona(int krok)
 {
@@ -17,10 +51,17 @@ int chod_noga_przenoszona(int krok)
     else { return KOLEJNOSC_NOG[krok % LICZBA_NOG]; }
 }
 
+// Funkcja zwracajaca przechyl o odpowiednim dla danej nogi znaku
 double chod_przechyl(int noga)
 {
     if (noga == 0 || noga == 2) { return PRZECHYL; }
     else if (noga == 1 || noga == 3) { return -PRZECHYL; }
     else { return 0.0; }
 
+}
+
+const faza_t *chod_faza(int nr)
+{
+    if (nr < 0 || nr >= LICZBA_FAZ) { return NULL; }
+    else { return &FAZY[nr]; }
 }
