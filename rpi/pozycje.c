@@ -11,12 +11,11 @@
 
 // Deklaracje funkcji
 static void wypisz_noge(int noga, double przechyl, double podniesienie);
+static void wypisz_kanaly(int noga, double bark, double udo_F, double udo_B);
 
 //Funkcja pomocnicza wypisujaca parametry do konsoli
 static void wypisz_noge(int noga, double przechyl, double podniesienie)
 {
-    char bufor[32];
-
     double bark;
     double udo_F;
     double udo_B;
@@ -24,6 +23,14 @@ static void wypisz_noge(int noga, double przechyl, double podniesienie)
     int ko = kin_nogi_serwa(noga, przechyl, podniesienie, &bark, &udo_F, &udo_B, 0.0);
     if (ko == 0) { fprintf(stderr, "Blad wyznaczania kinematyki, zla noga lub blad zakresu\n"); return;}
 
+    wypisz_kanaly(noga, bark, udo_F, udo_B);
+
+}
+
+// Funkcja wypisujaca ramki do kanalow
+static void wypisz_kanaly(int noga, double bark, double udo_F, double udo_B)
+{
+    char bufor[32];
     int kk;
     int kanal_bark = 3 * (noga % 2) + KANAL_BARK;
     int kanal_udo_F = 3 * (noga % 2) + KANAL_UDO_F;
