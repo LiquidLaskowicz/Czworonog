@@ -65,3 +65,21 @@ const faza_t *chod_faza(int nr)
     if (nr < 0 || nr >= LICZBA_FAZ) { return NULL; }
     else { return &FAZY[nr]; }
 }
+
+int chod_poza_nogi(int noga, int krok, int faza, double *bark_deg, double *udo_F_deg, double *udo_B_deg)
+{
+    int przen = chod_noga_przenoszona(krok);
+    if (przen == -1) { return 0; }
+    
+    const faza_t *f;
+    f = chod_faza(faza);
+    if (f == NULL) { return 0; }
+    
+    double przech = f->przechyl * chod_przechyl(przen);
+    double uniesienie = 0.0;
+    double przod = 0.0;
+
+    if (noga == przen) { uniesienie = f->uniesienie * PODNIESIENIE; przod = f->przod * DLUGOSC_KROKU; }
+
+    return kin_nogi_serwa(noga, przech, uniesienie, bark_deg, udo_F_deg, udo_B_deg, przod);
+}

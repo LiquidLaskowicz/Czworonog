@@ -17,5 +17,6 @@ typedef struct // to sa ulamki wartosci z define
 int chod_noga_przenoszona(int krok);
 double chod_przechyl(int noga);
 const faza_t *chod_faza(int nr);
+int chod_poza_nogi(int noga, int krok, int faza, double *bark_deg, double *udo_F_deg, double *udo_B_deg);
 
 #endif

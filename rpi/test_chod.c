@@ -36,5 +36,54 @@ int main(void)
 
     printf("Test poprawnosci fazy chodu OK\n");
 
+    double bark;
+    double udo_F;
+    double udo_B;
+    double bark2;
+    double udo_F2;
+    double udo_B2;
+
+    kinematyka_init();
+
+    assert(chod_poza_nogi(0, 0, 1, &bark, &udo_F, &udo_B) == 1);
+    assert(kin_nogi_serwa(0, PRZECHYL, 0.0, &bark2, &udo_F2, &udo_B2, 0.0) == 1);
+    assert(fabs(bark - bark2) < 1e-9);
+    assert(fabs(udo_F - udo_F2) < 1e-9);
+    assert(fabs(udo_B - udo_B2) < 1e-9);
+
+    printf("Test poprawnego skladania ruchu dla nogi 0 OK\n");
+
+    assert(chod_poza_nogi(1, 0, 1, &bark, &udo_F, &udo_B) == 1);
+    assert(kin_nogi_serwa(1, PRZECHYL, 0.0, &bark2, &udo_F2, &udo_B2, 0.0) == 1);
+    assert(fabs(bark - bark2) < 1e-9);
+    assert(fabs(udo_F - udo_F2) < 1e-9);
+    assert(fabs(udo_B - udo_B2) < 1e-9);
+
+    printf("Test poprawnego skladania ruchu dla nogi 1 OK\n");
+
+    assert(chod_poza_nogi(2, 0, 2, &bark, &udo_F, &udo_B) == 1);
+    assert(kin_nogi_serwa(2, PRZECHYL, PODNIESIENIE, &bark2, &udo_F2, &udo_B2, DLUGOSC_KROKU) == 1);
+    assert(fabs(bark - bark2) < 1e-9);
+    assert(fabs(udo_F - udo_F2) < 1e-9);
+    assert(fabs(udo_B - udo_B2) < 1e-9);
+
+    printf("Test poprawnego skladania ruchu dla nogi 2 z ruchem w przod OK\n");
+
+    assert(chod_poza_nogi(3, 0, 1, &bark, &udo_F, &udo_B) == 1);
+    assert(kin_nogi_serwa(3, PRZECHYL, 0.0, &bark2, &udo_F2, &udo_B2, 0.0) == 1);
+    assert(fabs(bark - bark2) < 1e-9);
+    assert(fabs(udo_F - udo_F2) < 1e-9);
+    assert(fabs(udo_B - udo_B2) < 1e-9);
+
+    printf("Test popranego skladania ruchu dla nogi 3 OK\n");
+
+    assert(chod_poza_nogi(0, -1, 1, &bark, &udo_F, &udo_B) == 0);
+
+    printf("Test komendy z blednym krokiem OK\n");
+
+    assert(chod_poza_nogi(0, 0, 5, &bark, &udo_F, &udo_B) == 0);
+
+    printf("Test komendy z bledna faza OK\n");
+
     return 0;
 }
