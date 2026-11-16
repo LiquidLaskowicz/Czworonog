@@ -1,13 +1,3 @@
-#!/usr/bin/env python3
-"""Wysylanie pozycji (ramek S) do jednej Pico. Narzedzie testowe, nie kod pracy.
-
-Uzycie:
-    python wyslij_poze.py PORT PLIK1 [PLIK2 ...] [--nogi 0 1] [--pauza 0.05]
-
-PORT   - np. COM3 (Windows) albo /dev/ttyACM0 (Linux)
-PLIKi  - pliki z ramkami 'S <kanal> <kat>' (wynik programu pozycje)
---nogi - ktore nogi TEJ Pico zasilic (0 = kanaly 0-2, 1 = kanaly 3-5), domyslnie 0 1
-"""
 import argparse
 import sys
 import time
@@ -17,7 +7,7 @@ import serial
 
 def wczytaj_ramki(sciezka):
     ramki = []
-    with open(sciezka, encoding="utf-8") as plik:
+    with open(sciezka, encoding="utf-8-sig") as plik:
         for nr, linia in enumerate(plik, 1):
             linia = linia.strip()
             if not linia or linia.startswith("#"):
