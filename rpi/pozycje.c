@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "protokol.h"
 #include <string.h>
+#include "chod.h"
 
 // Definicje parametrow
 #define KANAL_BARK 0
@@ -13,7 +14,7 @@
 static void wypisz_noge(int noga, double przechyl, double podniesienie);
 static void wypisz_kanaly(int noga, double bark, double udo_F, double udo_B);
 
-//Funkcja pomocnicza wypisujaca parametry do konsoli
+//Funkcja liczy katy serw nogi i wypisuje je jako ramki
 static void wypisz_noge(int noga, double przechyl, double podniesienie)
 {
     double bark;
@@ -49,7 +50,7 @@ static void wypisz_kanaly(int noga, double bark, double udo_F, double udo_B)
 
 int main(int argc, char *argv[])
 {
-    if (argc > 4 || argc < 3) { fprintf(stderr, "Pozycje <pico 0|1> <poza>\n"); return 1;}
+    if (argc > 5 || argc < 3) { fprintf(stderr, "Pozycje <pico 0|1> <poza>\n"); return 1;}
 
     int pico;
     int wczytane = sscanf(argv[1], "%d", &pico);
@@ -78,6 +79,32 @@ int main(int argc, char *argv[])
             if (2*pico + i == noga) { wypisz_noge(2*pico + i, przechyl, PODNIESIENIE); }
             else { wypisz_noge(2*pico + i, przechyl, 0.0); }
         }
+
+    }
+    else if (strcmp(argv[2], "krok") == 0)
+    {
+        if (argc != 5) { fprintf(stderr, "Pozycje <pico 0|1> <poza> <krok> <faza>\n"); return 1;}
+        int krok;
+        wczytane = sscanf(argv[3], "%d", &krok);
+        if (wczytane != 1 || krok < 0) {fprintf(stderr, "Nieprawidlowy krok\n"); return 1;}
+        int faza;
+        wczytane = sscanf(argv[4], "%d", &faza);
+        if (wczytane != 1 || faza < 0 || faza > (LICZBA_FAZ-1)) {fprintf(stderr, "Nieprawidlowa faza\n"); return 1;}
+
+        int noga;
+        double bark;
+        double udo_F;
+        double udo_B;
+
+        for (int i = 0; i < 2; i++)
+        {
+            noga = 2*pico + i;
+            int chp;
+            chp = chod_poza_nogi(noga, krok, faza, &bark, &udo_F, &udo_B);
+            if (chp == 0) { fprintf(stderr, "Blad przy wyznaczaniu pozy kroku\n"); return 1; }
+            wypisz_kanaly(noga, bark, udo_F, udo_B);
+        }
+
 
     }
     else { fprintf(stderr, "Nieznana poza\n"); return 1; }
