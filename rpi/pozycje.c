@@ -21,7 +21,7 @@ static void wypisz_noge(int noga, double przechyl, double podniesienie)
     double udo_F;
     double udo_B;
 
-    int ko = kin_nogi_serwa(noga, przechyl, podniesienie, &bark, &udo_F, &udo_B);
+    int ko = kin_nogi_serwa(noga, przechyl, podniesienie, &bark, &udo_F, &udo_B, 0.0);
     if (ko == 0) { fprintf(stderr, "Blad wyznaczania kinematyki, zla noga lub blad zakresu\n"); return;}
 
     int kk;

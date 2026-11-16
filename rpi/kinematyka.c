@@ -10,15 +10,15 @@ static const double PRZESUNIECIE_PLASZCZYZNY[4] =
 {
     -0.0397,
     -0.0397,
-    0.0397,
-    0.0397
+     0.0397,
+     0.0397
 };
 static const int ZNAK[4] =
 {
-    1,
+     1,
     -1,
     -1,
-    1
+     1
 };
 
 // Deklaracje funkcji
@@ -148,7 +148,7 @@ static double rad_na_stopnie(double rad)
 }
 
 // Funkcja liczy katy serw jednej nogi dla zadanego przechylu i podniesienia
-int kin_nogi_serwa(int noga, double przechyl, double podniesienie, double *bark_deg, double *udo_F_deg, double *udo_B_deg)
+int kin_nogi_serwa(int noga, double przechyl, double podniesienie, double *bark_deg, double *udo_F_deg, double *udo_B_deg, double przod)
 {
     double bark_rad;
     double fh;
@@ -158,7 +158,7 @@ int kin_nogi_serwa(int noga, double przechyl, double podniesienie, double *bark_
     int pk = kin_pozycja_nogi(noga, przechyl, podniesienie, &bark_rad, &fh);
     if (!pk) { return 0; }
 
-    int ok = kin_odw_noga(0.0, fh, &thF, &thB);
+    int ok = kin_odw_noga(przod, fh, &thF, &thB);
     if (!ok) { return 0; }
 
     *bark_deg = ZNAK[noga] * rad_na_stopnie(bark_rad);

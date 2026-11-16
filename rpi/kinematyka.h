@@ -20,6 +20,6 @@
 // Deklaracje funkcji
 void kinematyka_init(void);
 int kin_odw_noga(double fu, double fw, double *thF, double *thB);
-int kin_nogi_serwa(int noga, double przechyl, double podniesienie, double *bark_deg, double *udo_F_deg, double *udo_B_deg);
+int kin_nogi_serwa(int noga, double przechyl, double podniesienie, double *bark_deg, double *udo_F_deg, double *udo_B_deg, double przod);
 
 #endif

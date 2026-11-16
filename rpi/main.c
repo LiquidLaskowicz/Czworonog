@@ -13,6 +13,7 @@
 #define BARK 0
 #define RAMIE_R 1
 #define RAMIE_L 2
+#define OBSLUGIWANE_NOGI 2
 
 static const float ZAKRES[3][2] =
 {
@@ -124,8 +125,11 @@ static void wylacz_zasilanie(int fd)
 {
     char komenda[32];
 
-    buduj_ramke_zasilanie(komenda, sizeof(komenda), 0, 0);
-    wyslij_linie_lacze(fd, komenda);
+    for (int i = 0; i < OBSLUGIWANE_NOGI; i++)
+    {
+        buduj_ramke_zasilanie(komenda, sizeof(komenda), i, 0);
+        wyslij_linie_lacze(fd, komenda);
+    }
 }
 
 int main(int argc, char *argv[])
