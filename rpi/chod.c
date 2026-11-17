@@ -11,6 +11,14 @@ static const int KOLEJNOSC_NOG[LICZBA_NOG]=
     1
 };
 
+static const int KIERUNEK_PRZOD[LICZBA_NOG]=
+{
+    1,
+    1,
+    -1,
+    -1
+};
+
 static const faza_t FAZY[LICZBA_FAZ]=
 {
     {
@@ -79,7 +87,7 @@ int chod_poza_nogi(int noga, int krok, int faza, double *bark_deg, double *udo_F
     double uniesienie = 0.0;
     double przod = 0.0;
 
-    if (noga == przen) { uniesienie = f->uniesienie * PODNIESIENIE; przod = f->przod * DLUGOSC_KROKU; }
+    if (noga == przen) { uniesienie = f->uniesienie * PODNIESIENIE; przod = f->przod * DLUGOSC_KROKU * KIERUNEK_PRZOD[noga]; }
 
     return kin_nogi_serwa(noga, przech, uniesienie, bark_deg, udo_F_deg, udo_B_deg, przod);
 }

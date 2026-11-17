@@ -14,6 +14,8 @@
 #define LICZBA_SERW 6
 #define PREDKOSC_MAX_DEG_S 30.0f
 #define OKRES_RAMPY_US 20000
+#define LIMIT_BARK_DEG 30.0f
+#define LIMIT_UDO_DEG 80.0f
 
 // Main
 int main()
@@ -24,51 +26,51 @@ int main()
 
     serwo_t serwa [LICZBA_SERW] = 
     {
-        {   // Kanal 0: bark1
+        {   // Kanal 0: barkL
             .numer_pinu = 0,
             .kierunek = 1,
-            .kat_minimalny_deg = -45,
-            .kat_maksymalny_deg = 45,
+            .kat_minimalny_deg = -LIMIT_BARK_DEG,
+            .kat_maksymalny_deg = LIMIT_BARK_DEG,
             .trym_zera_us = 0
         },
 
-        {   // Kanal 1: ramie_R1
+        {   // Kanal 1: udo_FL
             .numer_pinu = 1,
             .kierunek = 1,
-            .kat_minimalny_deg = -45,
-            .kat_maksymalny_deg = 45,
+            .kat_minimalny_deg = -LIMIT_UDO_DEG,
+            .kat_maksymalny_deg = LIMIT_UDO_DEG,
             .trym_zera_us = 0,
             .offset_deg = 90
         },
 
-        {   // Kanal 2: ramie_L1
+        {   // Kanal 2: udo_BL
             .numer_pinu = 2,
             .kierunek = 1,
-            .kat_minimalny_deg = -45,
-            .kat_maksymalny_deg = 45,
+            .kat_minimalny_deg = -LIMIT_UDO_DEG,
+            .kat_maksymalny_deg = LIMIT_UDO_DEG,
             .trym_zera_us = 0,
             .offset_deg = 90
         },
 
-        {   // Kanal 3: bark2
+        {   // Kanal 3: barkR
             .numer_pinu = 3,
             .kierunek = 1,
-            .kat_minimalny_deg = -45,
-            .kat_maksymalny_deg = 45,
+            .kat_minimalny_deg = -LIMIT_BARK_DEG,
+            .kat_maksymalny_deg = LIMIT_BARK_DEG,
             .trym_zera_us = 0,
             .offset_deg = 0
         },
 
-        {   // Kanal 4: ramie_R2
+        {   // Kanal 4: udo_FR
             .numer_pinu = 4,
             .kierunek = 1,
-            .kat_minimalny_deg = -45,
-            .kat_maksymalny_deg = 45,
+            .kat_minimalny_deg = -LIMIT_UDO_DEG,
+            .kat_maksymalny_deg = LIMIT_UDO_DEG,
             .trym_zera_us = 0,
             .offset_deg = 90
         },
 
-        {   // Kanal 5: ramie_L2
+        {   // Kanal 5: udo_BR
             .numer_pinu = 5,
             .kierunek = 1,
             .kat_minimalny_deg = -45,

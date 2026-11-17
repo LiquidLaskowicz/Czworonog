@@ -8,7 +8,7 @@
 // Definicje parametrow
 #define PRZEKAZNIK_NOGA_A_PIN 6
 #define PRZEKAZNIK_NOGA_B_PIN 8
-#define PRZEKAZNIK_STAN_ODCIECIA 1 // wysoki - cewka NC rozlacza prad
+#define PRZEKAZNIK_STAN_ODCIECIA 0
 
 // Deklaracje funkcji
 void przekaznik_init(uint8_t pin);

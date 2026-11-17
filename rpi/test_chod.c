@@ -62,7 +62,7 @@ int main(void)
     printf("Test poprawnego skladania ruchu dla nogi 1 OK\n");
 
     assert(chod_poza_nogi(2, 0, 2, &bark, &udo_F, &udo_B) == 1);
-    assert(kin_nogi_serwa(2, PRZECHYL, PODNIESIENIE, &bark2, &udo_F2, &udo_B2, DLUGOSC_KROKU) == 1);
+    assert(kin_nogi_serwa(2, PRZECHYL, PODNIESIENIE, &bark2, &udo_F2, &udo_B2, -DLUGOSC_KROKU) == 1);
     assert(fabs(bark - bark2) < 1e-9);
     assert(fabs(udo_F - udo_F2) < 1e-9);
     assert(fabs(udo_B - udo_B2) < 1e-9);
