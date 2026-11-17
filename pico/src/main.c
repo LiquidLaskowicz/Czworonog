@@ -73,8 +73,8 @@ int main()
         {   // Kanal 5: udo_BR
             .numer_pinu = 5,
             .kierunek = 1,
-            .kat_minimalny_deg = -45,
-            .kat_maksymalny_deg = 45,
+            .kat_minimalny_deg = -LIMIT_UDO_DEG,
+            .kat_maksymalny_deg = LIMIT_UDO_DEG,
             .trym_zera_us = 0,
             .offset_deg = 90
         }
