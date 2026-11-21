@@ -8,3 +8,4 @@ ogolne/generator_danych_csv.py
 *.exe
 blynk_tesst.py
 blynk_test.py
+rpi/imu_odczyt.c
