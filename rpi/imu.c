@@ -40,6 +40,13 @@ int bajty_na_dane_imu(const uint8_t *bufor, imu_dane_t *dane)
     dane->ay = z_bajtow(bufor + 8) / LSB_PER_G;
     dane->az = z_bajtow(bufor + 10) / LSB_PER_G;
 
+    float ax_s = dane->ax, ay_s = dane->ay, az_s = dane->az;
+    float gx_s = dane->gx, gy_s = dane->gy, gz_s = dane->gz;
+
+    dane->ax = -ax_s;   dane->gx = -gx_s;
+    dane->ay = -az_s;   dane->gy = -gz_s;
+    dane->az = -ay_s;   dane->gz = -gy_s;
+
     return 1;
 }
 
