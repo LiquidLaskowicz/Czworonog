@@ -8,10 +8,10 @@ static double kat_dom_B;
 static double kat_dom_lydka;
 static const double PRZESUNIECIE_PLASZCZYZNY[4] = 
 {
-    -0.0397,
-    -0.0397,
-     0.0397,
-     0.0397
+    -0.0241,
+    -0.0241,
+     0.0241,
+     0.0241
 };
 static const int ZNAK[4] =
 {
