@@ -50,7 +50,16 @@ static void wypisz_kanaly(int noga, double bark, double udo_F, double udo_B)
 
 int main(int argc, char *argv[])
 {
-    if (argc > 5 || argc < 3) { fprintf(stderr, "Pozycje <pico 0|1> <poza>\n"); return 1;}
+    if (argc > 6 || argc < 3) { fprintf(stderr, "Pozycje <pico 0|1> <poza>\n"); return 1;}
+    kierunek_t kier = KIER_PRZOD;
+
+    if (argc == 6)
+    {
+        if (strcmp(argv[5], "przod") == 0) { kier = KIER_PRZOD; }
+            else if (strcmp(argv[5], "lewo") == 0) { kier = KIER_LEWO; }
+            else if (strcmp(argv[5], "prawo") == 0) { kier = KIER_PRAWO; }
+            else { fprintf(stderr, "Nieznany kierunek\n"); return 1; }
+    }
 
     int pico;
     int wczytane = sscanf(argv[1], "%d", &pico);
@@ -83,7 +92,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[2], "krok") == 0)
     {
-        if (argc != 5) { fprintf(stderr, "Pozycje <pico 0|1> <poza> <krok> <faza>\n"); return 1;}
+        if (argc != 5 && argc != 6) { fprintf(stderr, "Pozycje <pico 0|1> <poza> <krok> <faza>\n"); return 1;}
         int krok;
         wczytane = sscanf(argv[3], "%d", &krok);
         if (wczytane != 1 || krok < 0) {fprintf(stderr, "Nieprawidlowy krok\n"); return 1;}
@@ -100,7 +109,7 @@ int main(int argc, char *argv[])
         {
             noga = 2*pico + i;
             int chp;
-            chp = chod_poza_nogi(noga, krok, faza, &bark, &udo_F, &udo_B);
+            chp = chod_poza_nogi_kierunek(noga, krok, faza, kier, &bark, &udo_F, &udo_B);
             if (chp == 0) { fprintf(stderr, "Blad przy wyznaczaniu pozy kroku\n"); return 1; }
             wypisz_kanaly(noga, bark, udo_F, udo_B);
         }
