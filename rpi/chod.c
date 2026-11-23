@@ -15,8 +15,8 @@ static const int KIERUNEK_PRZOD[LICZBA_NOG]=
 {
     1,
     1,
-    -1,
-    -1
+    1,
+    1
 };
 
 static const faza_t FAZY[LICZBA_FAZ]=
