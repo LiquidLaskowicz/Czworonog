@@ -7,6 +7,7 @@
 #include "enkoder.h"
 #include "protokol.h"
 #include "przekaznik.h"
+#include <string.h>
 
 // Stale
 #define ROZMIAR_BUFORA 32
@@ -92,6 +93,7 @@ int main()
     }
 
     if (ENKODERY_PODLACZONE) { enkoder_init(); }
+    if (ENKODERY_MUX) { enkoder_mux_init(); }
 
     char bufor[ROZMIAR_BUFORA];
     uint8_t pojemnosc_bufora = 0;
@@ -133,6 +135,13 @@ int main()
                     }
                     bufor[pojemnosc_bufora] = '\0';
                     printf("Odebrano: %s\n", bufor);
+                    
+                    if (ENKODERY_MUX && strcmp(bufor, "E") == 0)
+                    {
+                        printf("E");
+                        for (int k = 0; k < ENKODER_LICZBA; k++) { printf(" %d", enkoder_mux_czytaj(k)); }
+                        printf("\n");
+                    }
 
                     if (parsuj_ramke_kat(bufor, &kanal, &kat) && kanal < LICZBA_SERW)
                     {
