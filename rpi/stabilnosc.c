@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stddef.h>
+#include "stabilnosc.h"
 
 #define ROZSTAW_BIODER_L 0.345
 #define ROZSTAW_BIODER_W 0.273
