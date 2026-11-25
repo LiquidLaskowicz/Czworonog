@@ -15,8 +15,8 @@
 #define LICZBA_SERW 6
 #define PREDKOSC_MAX_DEG_S 30.0f
 #define OKRES_RAMPY_US 20000
-#define LIMIT_BARK_DEG 60.0f
-#define LIMIT_UDO_DEG 80.0f
+#define LIMIT_BARK_DEG 80.0f
+#define LIMIT_UDO_DEG 90.0f
 
 // Main
 int main()
